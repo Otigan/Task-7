@@ -32,9 +32,12 @@ public class MainActivity extends AppCompatActivity {
         songList = findViewById(R.id.songList);
         arrayList = new ArrayList<>();
 
+
+        //Adding song-items to list
         arrayList.add(new Music("Symphony No. 2 in D major", "Berlin Symphony Orchestra", R.raw.symphony));
         arrayList.add(new Music("Интерлюдия Сказки Гофмана", "Жак Оффенбах", R.raw.swiss));
         arrayList.add(new Music("Warrior of the rest", "Various artists", R.raw.warriors));
+
 
         adapter = new CustomMusicAdapter(this, R.layout.custom_item_music, arrayList);
 
@@ -46,29 +49,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(MainActivity.this, "TESTIM", Toast.LENGTH_SHORT).show();
+
+                //Fist click on song will create MediaPlayer and will start playing clicked song
                 if (flag == true ) {
+                    Toast.makeText(MainActivity.this, "First launch", Toast.LENGTH_SHORT).show();
                     mediaPlayer = MediaPlayer.create(MainActivity.this, arrayList.get(position).getSong());
                     flag = false;
                 }
-                if(check_id != position && mediaPlayer.isPlaying()) {
+                //If positions of clicked tracks don't match and song is playing
+                //or if song is on pause, MediaPlayer will be playing new song that we clicked
+                if(check_id != position && mediaPlayer.isPlaying() || isPause && check_id != position) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = MediaPlayer.create(MainActivity.this, arrayList.get(position).getSong());
                     flag = false;
+                   
                 }
-                if (isPause && check_id != position) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer = MediaPlayer.create(MainActivity.this, arrayList.get(position).getSong());
-                    flag = false;
-                }
+                //Sets song on pause
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     isPause = true;
+
+
+                //This else block will definitely run on first click
                 }else{
+                    //Getting position of playing track so we can define which song to play
                     check_id = position;
+                    //Starting player
                     mediaPlayer.start();
+                    //Setting onCompleteListener, when the song will be completed, MediaPlayer will be released
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
@@ -82,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //On LongClick MediaPlayer will stop playing
         songList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

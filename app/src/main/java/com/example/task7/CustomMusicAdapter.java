@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-
+//ListView adapter
 public class CustomMusicAdapter extends BaseAdapter {
 
     private Context context;
